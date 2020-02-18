@@ -1,0 +1,82 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white navbar-shadow">
+    <div class="navbar-multiline mr-auto">
+        <span class="navbar-brand" href="#0">User Role Editor</span>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= $this->router->to('adminHome') ?>">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?= $this->router->to('adminUser') ?>">Role</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Role</li>
+            </ol>
+        </nav>
+    </div>
+    <a href="<?= $this->router->to('adminUserRoleEdit', ['id'=>0]) ?>" class="btn btn-primary">Create New</a>
+</nav>
+
+<div class="container p-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <form method="GET" class="card-body">
+                    <h5 class="card-title">Search</h5>
+                    <?= $form->field('q') ?>
+                    <div class="text-right">
+                        <button class="btn btn-primary">Find</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div>Total item: <?= number_format($total); ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <?php if($roles): ?>
+                <?php $csrf = $form->csrfToken(); ?>
+                <ul class="list-group list-group-flush card mb-3">
+                    <?php foreach($roles as $role): ?>
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    <?= $role->name->safe ?>
+                                </h5>
+                                <div>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Action">
+                                        <a href="<?= $this->router->to('adminUserRoleEdit', ['id'=>$role->id]) ?>" class="btn btn-secondary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button id="role-action-<?= $role->id ?>" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                            <div class="dropdown-menu" aria-labelledby="role-action-<?= $role->id ?>">
+                                                <a class="dropdown-item"
+                                                    data-toggle="confirm"
+                                                    data-text="Are you sure want to remove this item?"
+                                                    data-btn-type="danger"
+                                                    href="<?= $this->router->to('adminUserRoleRemove', ['id'=>$role->id], ['noob'=>$csrf]) ?>">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <small>
+                                <span title="Created">
+                                    <i class="far fa-calendar-plus"></i>
+                                    <?= $role->created->format('M d, Y H:i') ?>
+                                </span>
+                                &middot;
+                                <span title="Creator">
+                                    <i class="fas fa-user"></i>
+                                    <?= $role->user->fullname->safe ?>
+                                </span>
+                            </small>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+
+            <?php if($pages): ?>
+                <?= $this->partial('shared/pagination', ['pages'=>$pages, 'align'=>'right']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

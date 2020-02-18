@@ -1,0 +1,95 @@
+<form  method="POST" class="needs-validation main" novalidate>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white navbar-shadow">
+        <div class="navbar-multiline mr-auto">
+            <span class="navbar-brand" href="#0">User Role Editor</span>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?= $this->router->to('adminHome') ?>">Home</a></li>
+                    <li class="breadcrumb-item"><a href="<?= $this->router->to('adminUser') ?>">User</a></li>
+                    <li class="breadcrumb-item"><a href="<?= $this->router->to('adminUserRole') ?>">Role</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><?= $subtitle ?></li>
+                </ol>
+            </nav>
+        </div>
+        <button class="btn btn-primary">Save</button>
+    </nav>
+
+    <div class="container p-3">
+        <div class="row mb-3">
+            <?= $form->csrfField('noob') ?>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <?= $form->field('name'); ?>
+                                <?= $form->field('about'); ?>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3 text-right">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Selection">
+                                        <button type="button" class="btn btn-secondary btn-check-all" title="Check All">
+                                            <i class="fas fa-check-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-uncheck-all" title="Uncheck All">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <?php foreach($perms as $group => $perm): ?>
+                                    <?php
+                                        $group_label = hs($group);
+                                        $group_id    = md5($group);
+                                    ?>
+                                    <table class="table table-borderless table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">
+                                                    <button type="button" class="btn btn-sm btn-light btn-check-all-sub" title="Check All" data-id="<?= $group_id ?>">
+                                                        <i class="fas fa-check-square"></i>
+                                                    </button>
+                                                    <?= $group_label ?>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach($perm as $prm): ?>
+                                                <tr>
+                                                    <td style="width:35%">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input check-perms perm-group-<?= $group_id ?>" name="perms[]" value="<?= $prm->id ?>" id="prm-<?= $prm->id ?>"<?= ($prm->active ? ' checked' : '') ?>>
+                                                            <label class="custom-control-label" for="prm-<?= $prm->id ?>"><?= $prm->name->safe ?></label>
+                                                        </div>
+                                                    </td>
+                                                    <td><?= $prm->about->safe ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        $(document).on('click', '.btn-check-all', function(){
+            $('.check-perms').prop('checked', true);
+        });
+        $(document).on('click', '.btn-uncheck-all', function(){
+            $('.check-perms').prop('checked', false);
+        });
+        $(document).on('click', '.btn-check-all-sub', function(){
+            if( $('.perm-group-'+this.dataset.id+':not(:checked)').get(0) ){
+                $('.perm-group-'+this.dataset.id).prop('checked', true);
+            }else{
+                $('.perm-group-'+this.dataset.id).prop('checked', false);
+            }
+        });
+    }, false);
+</script>

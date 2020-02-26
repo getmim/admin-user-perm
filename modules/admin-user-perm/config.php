@@ -30,6 +30,9 @@ return [
             ],
             [
                 'lib-user-perm' => NULL
+            ],
+            [
+                'admin-user' => NULL
             ]
         ],
         'optional' => []
